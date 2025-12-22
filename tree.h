@@ -19,14 +19,16 @@ struct Node {
     infotype info;
 };
 
-void createTreef(adrNode& root);
-adrNode createNode(string eventName, int startTime, int endTime);
-void insertNode(adrNode& root, adrNode p);
-void deleteNode(adrNode& root, adrNode p);
+// basic methods
+void createTree(adrNode& root);
+adrNode createNode(int startTime, int endTime, string eventName);
+void insertNode(adrNode& root, adrNode node);
 void displayTree(adrNode root);
-adrNode search(string eventName);
-void nextEvent(adrNode root, int time);
-void freeTime(adrNode root);
+void updateNode(adrNode& root, adrNode& node, string eventName, int startTime, int endTime);
+void freeNode(adrNode& node);
+adrNode searchNode(adrNode root, string eventName);
 
+// additional methods
+int totalEvents(adrNode root);
 
 #endif // TREE_H_INCLUDED

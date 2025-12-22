@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1766425263 source:d:\mata kuliah\struktur data\tubes\event-manager\tree.cpp
+	"tree.h"
+	<string>
+
+1766421448 d:\mata kuliah\struktur data\tubes\event-manager\tree.h
+	<iostream>
+
+1766423678 source:d:\mata kuliah\struktur data\tubes\event-manager\utils.cpp
+	"tree.h"
+
+1766425318 source:d:\mata kuliah\struktur data\tubes\event-manager\main.cpp
+	"tree.h"
+
