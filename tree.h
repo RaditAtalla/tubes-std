@@ -1,13 +1,13 @@
 #ifndef TREE_H_INCLUDED
 #define TREE_H_INCLUDED
 
-#include <iostream>
+#include "bits/stdc++.h"
 
 using namespace std;
 
 struct infotype {
-    int startTime;
-    int endTime;
+    double startTime;
+    double endTime;
     string eventName;
 };
 
@@ -19,13 +19,14 @@ struct Node {
     infotype info;
 };
 
-// basic methods
+// primitive tree methods
 void createTree(adrNode& root);
-adrNode createNode(int startTime, int endTime, string eventName);
+adrNode createNode(double startTime, double endTime, string eventName);
 void insertNode(adrNode& root, adrNode node);
 void displayTree(adrNode root);
-void updateNode(adrNode& root, adrNode& node, string eventName, int startTime, int endTime);
-void freeNode(adrNode& node);
+void updateNode(adrNode& root, string oldName, string newName,
+                double newStart, double newEnd);
+void deleteNodeByName(adrNode &root, string eventName);
 adrNode searchNode(adrNode root, string eventName);
 
 // additional methods
