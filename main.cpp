@@ -9,51 +9,75 @@ void showMenu() {
     cout << "0. Exit" << endl;
     cout << "Input: ";
 }
+double convertStringToDecimal(string timeStr) {
+
+    double hours = stod(timeStr.substr(0, 2));
+    double minutes = stod(timeStr.substr(2 + 1));
+
+    return hours + (minutes / 60.0);
+}
 
 void addEvent(adrNode& root) {
     string eventName;
-    int startTime, endTime;
+    string startTime, endTime;
 
     cout << "## ADD EVENT ##" << endl;
-    cout << "Event name: " << endl;
-    cin >> eventName;
-    cout << "Start time: " << endl;
+
+    cout << "Event name: ";
+    cin.ignore();
+    getline(cin, eventName);
+
+    cout << "Start time (HH:MM): ";
     cin >> startTime;
-    cout << "End time: " << endl;
+
+
+    double decimalStartTime = convertStringToDecimal(startTime);
+
+    cout << "End time (HH:MM): ";
     cin >> endTime;
+    double decimalEndTime = convertStringToDecimal(endTime);
 
-    adrNode event = createNode(startTime, endTime, eventName);
-    insertNode(root, event);
+    if(decimalStartTime >= decimalEndTime){
+        cout << "@ Insertion Failed, Start time must be less than end time";
+    } else{
+        adrNode p = createNode(decimalStartTime, decimalEndTime, eventName);
+        insertNode(root, p);
+    }
 
-    cout << endl;
+
+    cout << "\n\n";
+
+
 }
 
-void showSchedule(adrNode& root) {
+void showSchedule(adrNode root) {
     cout << "## TODAY'S SCHEDULE ##" << endl;
-    cout << "@ You have x event(s)" << endl;
+    int cnt = totalEvents(root);
+    cout << "@ You have " << cnt << " event(s)" << endl;
     displayTree(root);
 
-    cout << endl;
+    cout << "\n";
 }
 
 void updateEvent(adrNode& root) {
     string eventName, newEventName;
-    int startTime, endTime;
+    string startTime, endTime;
 
     cout << "## UPDATE EVENT ##" << endl;
-    cout << "Event name to update: " << endl;
+    cout << "Event name to update: ";
     cin >> eventName;
 
     adrNode event = searchNode(root, eventName);
     if(event) {
-        cout << "new Event name: " << endl;
+        cout << "new Event name: ";
         cin >> newEventName;
-        cout << "New start time: " << endl;
+        cout << "New start time (HH:MM): ";
         cin >> startTime;
-        cout << "New end time: " << endl;
+        cout << "New end time: (HH:MM): ";
         cin >> endTime;
 
-        updateNode(root, event, newEventName, startTime, endTime);
+        updateNode(root, event->info.eventName, newEventName, convertStringToDecimal(startTime), convertStringToDecimal(endTime));
+
     } else {
         cout << "@ Event not found" << endl;
     }
@@ -65,13 +89,11 @@ void deleteEvent(adrNode& root) {
     string eventName;
 
     cout << "## DELETE EVENT ##" << endl;
-    cout << "Event name to delete: " << endl;
+    cout << "Event name to delete: ";
     cin >> eventName;
 
-    adrNode event = searchNode(root, eventName);
-    freeNode(event);
+    deleteNodeByName(root, eventName);
 
-    cout << "@ Event deleted" << endl;
     cout << endl;
 }
 

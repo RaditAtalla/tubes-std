@@ -17,11 +17,10 @@ adrNode createNode(double startTime, double endTime, string eventName) {
 void insertNode(adrNode& root, adrNode node) {
     if(root == nullptr){
         root = node;
-        cout << "Acara berhasil ditambahkan\n";
+        cout << "@Insertion success, '" << node->info.eventName << "' successfully added\n" ;
     } else if(node->info.startTime < root->info.endTime &&
               node->info.endTime > root->info.startTime){
-        cout << "INSERT NODE FAIL\n";
-        cout << "Acara bertabrakan dengan " << root->info.eventName << "\n";
+        cout << "@Insertion fail, event intersect with '" << root->info.eventName << "'\n";
         return;
     } else if(node->info.endTime <= root->info.startTime){
         insertNode(root->left, node);
@@ -99,8 +98,8 @@ adrNode deleteNode(adrNode& root, double time){
         adrNode temp = getMinValue(root->right);
 
         root->info.startTime = temp->info.startTime;
-        root->info.endTime = temp->info.endTime;
         root->info.eventName = temp->info.eventName;
+        root->info.endTime = temp->info.endTime;
 
         root->right = deleteNode(root->right, temp->info.startTime);
     }
@@ -110,9 +109,9 @@ adrNode deleteNode(adrNode& root, double time){
 
 void deleteNodeByName(adrNode& root, string eventName) {
     adrNode target = searchNode(root, eventName);
-
+    //target tidak ada
     if (target == nullptr) {
-        cout << "Gagal menghapus: Event '" << eventName << "' tidak ditemukan.\n";
+        cout << "@ Node deletion failed, '" << eventName << "' not found.\n";
         return;
     }
 
@@ -120,7 +119,7 @@ void deleteNodeByName(adrNode& root, string eventName) {
 
     root = deleteNode(root, time);
 
-    cout << "Event '" << eventName << "' berhasil dihapus.\n";
+    cout << "@ Node deletion success, '" << eventName << "' successfully deleted.\n";
 }
 
 bool isAvailable(adrNode root, double start, double end) {
@@ -129,43 +128,48 @@ bool isAvailable(adrNode root, double start, double end) {
     if (start < root->info.endTime && end > root->info.startTime) {
         return false;
     }
+
     return isAvailable(root->left, start, end) && isAvailable(root->right, start, end);
 }
+
 
 void updateNode(adrNode& root, string oldName, string newName,
                 double newStart, double newEnd) {
     adrNode target = searchNode(root, oldName);
 
+    //Node tidak ditemukan
     if (target == nullptr) {
-        cout << "Update Gagal: Event '" << oldName << "' tidak ditemukan.\n";
+        cout << "@ Update Event failed, Event'" << oldName << "' not found\n";
         return;
     }
 
+    //starttime dan endtime baru sama dengan starttime dan endtime lama
     if (abs(target->info.startTime - newStart) < 1e-9 &&
         abs(target->info.endTime - newEnd) < 1e-9) {
 
         target->info.eventName = newName;
-        cout << "Update Berhasil: Nama event diubah.\n";
+        cout << "@ Update Success.\n";
         return;
     }
 
     double oldStart = target->info.startTime;
     double oldEnd = target->info.endTime;
-    string backupName = target->info.eventName;
+    string oldNameTemp = target->info.eventName;
 
     root = deleteNode(root, oldStart);
 
+    //Cek apakah ada waktu kosong untuk node baru
     if (isAvailable(root, newStart, newEnd)) {
         adrNode newNode = createNode(newStart, newEnd, newName);
         insertNode(root, newNode);
-        cout << "Update Berhasil: Jadwal dipindahkan.\n";
+        cout << "@ Update Success\n";
     }
     else {
-        cout << "Update Gagal: Waktu baru bentrok dengan jadwal lain!\n";
-        cout << "Mengembalikan data lama...\n";
+        //jika tidak ada, maka insert kembali node yang dihapus tadi
+        cout << "@ Update Failed, reverting deleted node '" << oldNameTemp << "'\n";
 
-        adrNode oldNode = createNode(oldStart, oldEnd, backupName);
-        insertNode(root, oldNode);
+        adrNode restoreNode = createNode(oldStart, oldEnd, oldNameTemp);
+        insertNode(root, restoreNode);
     }
 }
 
